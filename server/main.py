@@ -2,9 +2,11 @@ from fastapi import FastAPI, HTTPException, Depends, Header, Form
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
 from typing import List, Optional
-from datetime import datetime
+from datetime import datetime, timedelta
 import uvicorn
 import secrets
+import threading
+import time
 
 app = FastAPI(title="Mock SmartPulse Server", version="1.0.0")
 security = HTTPBearer()
@@ -14,6 +16,39 @@ mock_tokens = {}
 mock_users = {
     "test_user": "test_password"
 }
+
+# Token cleanup için lock
+token_lock = threading.Lock()
+
+
+def cleanup_expired_tokens():
+    """
+    Expired tokenları temizle
+    Background thread olarak çalışır
+    """
+    while True:
+        time.sleep(300)  # 5 dakikada bir temizle
+        
+        with token_lock:
+            now = datetime.now()
+            expired_tokens = []
+            
+            for token, data in mock_tokens.items():
+                expires_at = datetime.fromisoformat(data["expires_at"])
+                if now > expires_at:
+                    expired_tokens.append(token)
+            
+            for token in expired_tokens:
+                del mock_tokens[token]
+            
+            if expired_tokens:
+                print(f"🧹 Cleaned up {len(expired_tokens)} expired tokens")
+                print(f"📊 Active tokens: {len(mock_tokens)}")
+
+
+# Cleanup thread'i başlat
+cleanup_thread = threading.Thread(target=cleanup_expired_tokens, daemon=True)
+cleanup_thread.start()
 
 # ============== REQUEST MODELS ==============
 
@@ -143,8 +178,6 @@ def login(request: LoginRequest, user_data: dict = Depends(verify_token)):
     if request.username != user_data["username"]:
         raise HTTPException(status_code=403, detail="Username mismatch with token")
     
-    print(f"✅ Login successful")
-
     return LoginResponse(
         success=True,
         message="Login successful",

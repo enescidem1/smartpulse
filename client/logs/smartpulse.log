@@ -1,0 +1,103 @@
+2025-10-31 10:10:34 - __main__ - INFO - SmartPulse Integration Client starting...
+2025-10-31 10:10:34 - __main__ - INFO - Generated mock forecast for: 2024-11-26
+2025-10-31 10:10:34 - __main__ - INFO - Total hours: 24
+2025-10-31 10:10:34 - __main__ - INFO - ============================================================
+2025-10-31 10:10:34 - __main__ - INFO - Starting SmartPulse Pipeline
+2025-10-31 10:10:34 - __main__ - INFO - ============================================================
+2025-10-31 10:10:34 - __main__ - INFO - Requesting access token...
+2025-10-31 10:10:36 - __main__ - INFO - Token received successfully (expires at 11:10:36)
+2025-10-31 10:10:36 - __main__ - INFO - Logging in to portal...
+2025-10-31 10:10:36 - __main__ - INFO - Login successful (User ID: 2952)
+2025-10-31 10:10:36 - __main__ - INFO - Sending consumption forecast...
+2025-10-31 10:10:36 - __main__ - INFO - Forecast saved successfully (24 records)
+2025-10-31 10:10:36 - __main__ - INFO - ============================================================
+2025-10-31 10:10:36 - __main__ - INFO - Pipeline completed successfully!
+2025-10-31 10:10:36 - __main__ - INFO - ============================================================
+2025-10-31 10:10:36 - __main__ - INFO - All operations completed successfully!
+2025-10-31 10:11:06 - __main__ - INFO - SmartPulse Integration Client starting...
+2025-10-31 10:11:06 - __main__ - INFO - Generated mock forecast for: 2024-11-26
+2025-10-31 10:11:06 - __main__ - INFO - Total hours: 24
+2025-10-31 10:11:06 - __main__ - INFO - ============================================================
+2025-10-31 10:11:06 - __main__ - INFO - Starting SmartPulse Pipeline
+2025-10-31 10:11:06 - __main__ - INFO - ============================================================
+2025-10-31 10:11:06 - __main__ - INFO - Requesting access token...
+2025-10-31 10:11:08 - __main__ - INFO - Token received successfully (expires at 11:11:08)
+2025-10-31 10:11:08 - __main__ - INFO - Logging in to portal...
+2025-10-31 10:11:08 - __main__ - INFO - Login successful (User ID: 2952)
+2025-10-31 10:11:08 - __main__ - INFO - Sending consumption forecast...
+2025-10-31 10:11:08 - __main__ - INFO - Forecast saved successfully (24 records)
+2025-10-31 10:11:08 - __main__ - INFO - ============================================================
+2025-10-31 10:11:08 - __main__ - INFO - Pipeline completed successfully!
+2025-10-31 10:11:08 - __main__ - INFO - ============================================================
+2025-10-31 10:11:08 - __main__ - INFO - All operations completed successfully!
+2025-10-31 10:11:51 - __main__ - INFO - SmartPulse Integration Client starting...
+2025-10-31 10:11:51 - __main__ - INFO - Generated mock forecast for: 2024-11-26
+2025-10-31 10:11:51 - __main__ - INFO - Total hours: 24
+2025-10-31 10:11:51 - __main__ - INFO - ============================================================
+2025-10-31 10:11:51 - __main__ - INFO - Starting SmartPulse Pipeline
+2025-10-31 10:11:51 - __main__ - INFO - ============================================================
+2025-10-31 10:11:51 - __main__ - INFO - Requesting access token...
+2025-10-31 10:11:51 - urllib3.connectionpool - DEBUG - Starting new HTTP connection (1): localhost:8001
+2025-10-31 10:11:53 - urllib3.connectionpool - DEBUG - http://localhost:8001 "POST /oauth2/token HTTP/1.1" 200 130
+2025-10-31 10:11:53 - __main__ - INFO - Token received successfully (expires at 11:11:53)
+2025-10-31 10:11:53 - __main__ - DEBUG - Token preview: mock_token_X0PJUzd85...
+2025-10-31 10:11:53 - __main__ - DEBUG - Token is still valid
+2025-10-31 10:11:53 - __main__ - INFO - Logging in to portal...
+2025-10-31 10:11:53 - urllib3.connectionpool - DEBUG - http://localhost:8001 "POST /Login/Login HTTP/1.1" 200 59
+2025-10-31 10:11:53 - __main__ - INFO - Login successful (User ID: 2952)
+2025-10-31 10:11:53 - __main__ - DEBUG - Token is still valid
+2025-10-31 10:11:53 - __main__ - INFO - Sending consumption forecast...
+2025-10-31 10:11:53 - urllib3.connectionpool - DEBUG - http://localhost:8001 "POST /api/consumption-forecast/save-consumption-forecasts-provider HTTP/1.1" 200 87
+2025-10-31 10:11:53 - __main__ - INFO - Forecast saved successfully (24 records)
+2025-10-31 10:11:53 - __main__ - INFO - ============================================================
+2025-10-31 10:11:53 - __main__ - INFO - Pipeline completed successfully!
+2025-10-31 10:11:53 - __main__ - INFO - ============================================================
+2025-10-31 10:11:53 - __main__ - INFO - All operations completed successfully!
+2025-10-31 10:28:13 - __main__ - INFO - SmartPulse Integration Client starting...
+2025-10-31 10:28:13 - __main__ - INFO - Generated mock forecast for: 2024-11-26
+2025-10-31 10:28:13 - __main__ - INFO - Total hours: 24
+2025-10-31 10:28:13 - __main__ - INFO - ============================================================
+2025-10-31 10:28:13 - __main__ - INFO - Starting SmartPulse Pipeline
+2025-10-31 10:28:13 - __main__ - INFO - ============================================================
+2025-10-31 10:28:13 - __main__ - INFO - Requesting access token...
+2025-10-31 10:28:15 - __main__ - INFO - Token received successfully (expires at 11:28:15)
+2025-10-31 10:28:15 - __main__ - INFO - Logging in to portal...
+2025-10-31 10:28:15 - __main__ - INFO - Login successful (User ID: 2952)
+2025-10-31 10:28:15 - __main__ - INFO - Sending consumption forecast...
+2025-10-31 10:28:15 - __main__ - INFO - Forecast saved successfully (24 records)
+2025-10-31 10:28:15 - __main__ - INFO - ============================================================
+2025-10-31 10:28:15 - __main__ - INFO - Pipeline completed successfully!
+2025-10-31 10:28:15 - __main__ - INFO - ============================================================
+2025-10-31 10:28:15 - __main__ - INFO - All operations completed successfully!
+2025-10-31 10:29:04 - __main__ - INFO - SmartPulse Integration Client starting...
+2025-10-31 10:29:04 - __main__ - INFO - Generated mock forecast for: 2024-11-26
+2025-10-31 10:29:04 - __main__ - INFO - Total hours: 24
+2025-10-31 10:29:04 - __main__ - INFO - ============================================================
+2025-10-31 10:29:04 - __main__ - INFO - Starting SmartPulse Pipeline
+2025-10-31 10:29:04 - __main__ - INFO - ============================================================
+2025-10-31 10:29:04 - __main__ - INFO - Requesting access token...
+2025-10-31 10:29:06 - __main__ - INFO - Token received successfully (expires at 11:29:06)
+2025-10-31 10:29:06 - __main__ - INFO - Logging in to portal...
+2025-10-31 10:29:06 - __main__ - INFO - Login successful (User ID: 2952)
+2025-10-31 10:29:06 - __main__ - INFO - Sending consumption forecast...
+2025-10-31 10:29:06 - __main__ - INFO - Forecast saved successfully (24 records)
+2025-10-31 10:29:06 - __main__ - INFO - ============================================================
+2025-10-31 10:29:06 - __main__ - INFO - Pipeline completed successfully!
+2025-10-31 10:29:06 - __main__ - INFO - ============================================================
+2025-10-31 10:29:06 - __main__ - INFO - All operations completed successfully!
+2025-10-31 10:34:41 - __main__ - INFO - SmartPulse Integration Client starting...
+2025-10-31 10:34:41 - __main__ - INFO - Generated mock forecast for: 2024-11-26
+2025-10-31 10:34:41 - __main__ - INFO - Total hours: 24
+2025-10-31 10:34:41 - __main__ - INFO - ============================================================
+2025-10-31 10:34:41 - __main__ - INFO - Starting SmartPulse Pipeline
+2025-10-31 10:34:41 - __main__ - INFO - ============================================================
+2025-10-31 10:34:41 - __main__ - INFO - Requesting access token...
+2025-10-31 10:34:43 - __main__ - INFO - Token received successfully (expires at 11:34:43)
+2025-10-31 10:34:43 - __main__ - INFO - Logging in to portal...
+2025-10-31 10:34:43 - __main__ - INFO - Login successful (User ID: 2952)
+2025-10-31 10:34:43 - __main__ - INFO - Sending consumption forecast...
+2025-10-31 10:34:43 - __main__ - INFO - Forecast saved successfully (24 records)
+2025-10-31 10:34:43 - __main__ - INFO - ============================================================
+2025-10-31 10:34:43 - __main__ - INFO - Pipeline completed successfully!
+2025-10-31 10:34:43 - __main__ - INFO - ============================================================
+2025-10-31 10:34:43 - __main__ - INFO - All operations completed successfully!
