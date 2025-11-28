@@ -133,3 +133,96 @@
 2025-10-31 12:09:25 - __main__ - INFO - Pipeline completed successfully!
 2025-10-31 12:09:25 - __main__ - INFO - ============================================================
 2025-10-31 12:09:25 - __main__ - INFO - All operations completed successfully!
+2025-11-28 16:04:26 - __main__ - INFO - SmartPulse Integration Client starting...
+2025-11-28 16:04:26 - __main__ - INFO - Generated mock forecast for: 2024-11-26
+2025-11-28 16:04:26 - __main__ - INFO - Total hours: 24
+2025-11-28 16:04:26 - __main__ - INFO - ============================================================
+2025-11-28 16:04:26 - __main__ - INFO - Starting SmartPulse Pipeline
+2025-11-28 16:04:26 - __main__ - INFO - ============================================================
+2025-11-28 16:04:26 - __main__ - INFO - Requesting access token...
+2025-11-28 16:04:26 - __main__ - INFO - Token received successfully (expires at 17:04:26)
+2025-11-28 16:04:26 - __main__ - INFO - Logging in to portal...
+2025-11-28 16:04:26 - __main__ - INFO - Login successful (User ID: 2952)
+2025-11-28 16:04:26 - __main__ - INFO - Sending consumption forecast...
+2025-11-28 16:04:26 - __main__ - INFO - Forecast saved successfully (24 records)
+2025-11-28 16:04:26 - __main__ - INFO - ============================================================
+2025-11-28 16:04:26 - __main__ - INFO - Pipeline completed successfully!
+2025-11-28 16:04:26 - __main__ - INFO - ============================================================
+2025-11-28 16:04:26 - __main__ - INFO - All operations completed successfully!
+2025-11-28 16:41:01 - __main__ - INFO - SmartPulse Integration Client starting...
+2025-11-28 16:41:01 - __main__ - INFO - Target forecast date: 2025-11-28
+2025-11-28 16:41:01 - __main__ - INFO - Connecting to database...
+2025-11-28 16:41:01 - __main__ - ERROR - Fatal error: No module named 'psycopg2'
+Traceback (most recent call last):
+  File "/Users/enes/Documents/smartpulse/client/main.py", line 552, in <module>
+    db_manager = DatabaseManager(db_url)
+  File "/Users/enes/Documents/smartpulse/client/main.py", line 197, in __init__
+    self.engine = create_engine(db_url)
+  File "<string>", line 2, in create_engine
+  File "/Users/enes/Documents/smartpulse/env/lib/python3.9/site-packages/sqlalchemy/util/deprecations.py", line 281, in warned
+    return fn(*args, **kwargs)  # type: ignore[no-any-return]
+  File "/Users/enes/Documents/smartpulse/env/lib/python3.9/site-packages/sqlalchemy/engine/create.py", line 617, in create_engine
+    dbapi = dbapi_meth(**dbapi_args)
+  File "/Users/enes/Documents/smartpulse/env/lib/python3.9/site-packages/sqlalchemy/dialects/postgresql/psycopg2.py", line 696, in import_dbapi
+    import psycopg2
+ModuleNotFoundError: No module named 'psycopg2'
+2025-11-28 16:41:39 - __main__ - INFO - SmartPulse Integration Client starting...
+2025-11-28 16:41:39 - __main__ - INFO - Target forecast date: 2025-11-28
+2025-11-28 16:41:39 - __main__ - INFO - Connecting to database...
+2025-11-28 16:41:41 - __main__ - INFO - Fetching forecast data for 2025-11-28...
+2025-11-28 16:41:41 - __main__ - INFO - Fetched 1056 records from database for date 2025-11-28
+2025-11-28 16:41:41 - __main__ - INFO - Transforming data to API format...
+2025-11-28 16:41:41 - __main__ - INFO - Transformed 1056 DB records into 24-hour forecast for 2025-11-28
+2025-11-28 16:41:41 - __main__ - INFO - ============================================================
+2025-11-28 16:41:41 - __main__ - INFO - Starting SmartPulse Pipeline
+2025-11-28 16:41:41 - __main__ - INFO - ============================================================
+2025-11-28 16:41:41 - __main__ - INFO - Requesting access token...
+2025-11-28 16:41:41 - __main__ - INFO - Token received successfully (expires at 17:41:41)
+2025-11-28 16:41:41 - __main__ - INFO - Logging in to portal...
+2025-11-28 16:41:41 - __main__ - INFO - Login successful (User ID: 2952)
+2025-11-28 16:41:41 - __main__ - INFO - Sending consumption forecast...
+2025-11-28 16:41:41 - __main__ - INFO - Forecast saved successfully (24 records)
+2025-11-28 16:41:41 - __main__ - INFO - ============================================================
+2025-11-28 16:41:41 - __main__ - INFO - Pipeline completed successfully!
+2025-11-28 16:41:41 - __main__ - INFO - ============================================================
+2025-11-28 16:41:41 - __main__ - INFO - All operations completed successfully!
+2025-11-28 16:45:34 - __main__ - INFO - SmartPulse Integration Client starting...
+2025-11-28 16:45:34 - __main__ - INFO - Target forecast date: 2025-11-28
+2025-11-28 16:45:34 - __main__ - INFO - Connecting to database...
+2025-11-28 16:45:34 - __main__ - INFO - Fetching forecast data for 2025-11-28...
+2025-11-28 16:45:34 - __main__ - INFO - Fetched 1056 records from database for date 2025-11-28
+2025-11-28 16:45:34 - __main__ - INFO - Transforming data to API format...
+2025-11-28 16:45:34 - __main__ - INFO - Transformed 1056 DB records into 24-hour forecast for 2025-11-28
+2025-11-28 16:45:34 - __main__ - INFO - ============================================================
+2025-11-28 16:45:34 - __main__ - INFO - Starting SmartPulse Pipeline
+2025-11-28 16:45:34 - __main__ - INFO - ============================================================
+2025-11-28 16:45:34 - __main__ - INFO - Requesting access token...
+2025-11-28 16:45:34 - __main__ - INFO - Token received successfully (expires at 17:45:34)
+2025-11-28 16:45:34 - __main__ - INFO - Logging in to portal...
+2025-11-28 16:45:34 - __main__ - INFO - Login successful (User ID: 2952)
+2025-11-28 16:45:34 - __main__ - INFO - Sending consumption forecast...
+2025-11-28 16:45:34 - __main__ - INFO - Forecast saved successfully (24 records)
+2025-11-28 16:45:34 - __main__ - INFO - ============================================================
+2025-11-28 16:45:34 - __main__ - INFO - Pipeline completed successfully!
+2025-11-28 16:45:34 - __main__ - INFO - ============================================================
+2025-11-28 16:45:34 - __main__ - INFO - All operations completed successfully!
+2025-11-28 16:53:42 - __main__ - INFO - SmartPulse Integration Client starting...
+2025-11-28 16:53:42 - __main__ - INFO - Target forecast date: 2025-11-29
+2025-11-28 16:53:42 - __main__ - INFO - Connecting to database...
+2025-11-28 16:53:42 - __main__ - INFO - Fetching forecast data for 2025-11-29...
+2025-11-28 16:53:43 - __main__ - INFO - Fetched 1056 records from database for date 2025-11-29
+2025-11-28 16:53:43 - __main__ - INFO - Transforming data to API format...
+2025-11-28 16:53:43 - __main__ - INFO - Transformed 1056 DB records into 24-hour forecast for 2025-11-29
+2025-11-28 16:53:43 - __main__ - INFO - ============================================================
+2025-11-28 16:53:43 - __main__ - INFO - Starting SmartPulse Pipeline
+2025-11-28 16:53:43 - __main__ - INFO - ============================================================
+2025-11-28 16:53:43 - __main__ - INFO - Requesting access token...
+2025-11-28 16:53:43 - __main__ - INFO - Token received successfully (expires at 17:53:43)
+2025-11-28 16:53:43 - __main__ - INFO - Logging in to portal...
+2025-11-28 16:53:43 - __main__ - INFO - Login successful (User ID: 2952)
+2025-11-28 16:53:43 - __main__ - INFO - Sending consumption forecast...
+2025-11-28 16:53:43 - __main__ - INFO - Forecast saved successfully (24 records)
+2025-11-28 16:53:43 - __main__ - INFO - ============================================================
+2025-11-28 16:53:43 - __main__ - INFO - Pipeline completed successfully!
+2025-11-28 16:53:43 - __main__ - INFO - ============================================================
+2025-11-28 16:53:43 - __main__ - INFO - All operations completed successfully!

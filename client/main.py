@@ -8,7 +8,37 @@ import json
 import time
 import logging
 from functools import wraps
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, Session
 from client.config import load_config, Config
+
+
+# ==================== KONFIGURASYON ====================
+"""
+OTOMATIK GÜN HESAPLAMA:
+Bu script 2 gün için tahmin verisi gönderir:
+1. Bugün (T+0): Script'in çalıştırıldığı gün
+2. Yarın (T+1): Script'in çalıştırıldığı günün ertesi günü
+
+Örnek:
+- 28 Kasım 2025'te çalıştırılırsa → 28 Kasım ve 29 Kasım verilerini gönderir
+- 29 Kasım 2025'te çalıştırılırsa → 29 Kasım ve 30 Kasım verilerini gönderir
+
+Bu yaklaşım, karşı sunucunun günlük veri alma gereksinimine uygundur.
+Manuel gün belirlemeye gerek yoktur, script otomatik olarak tarihleri hesaplar.
+"""
+
+# Database Configuration
+DB_HOST = "localhost"
+DB_PORT = "5432"
+DB_NAME = "met_db"
+DB_USER = "mlmduser"
+DB_PASSWORD = "mlmdpassword"
+
+# Kaç gün ileri tahmin gönderilsin (varsayılan: bugün + yarın = 2 gün)
+FORECAST_DAYS_AHEAD = 2
+
+# =======================================================
 
 
 # Logging setup
@@ -54,6 +84,30 @@ def setup_logging(log_level=logging.INFO, log_file=None):
 
 # Logger oluştur
 logger = logging.getLogger(__name__)
+
+
+def get_forecast_dates(days_ahead: int = 2) -> List[str]:
+    """
+    Bugünden başlayarak belirtilen sayıda gün için tarih listesi oluştur
+    
+    Args:
+        days_ahead: Kaç gün ileri tahmin gönderilecek (varsayılan: 2)
+        
+    Returns:
+        YYYY-MM-DD formatında tarih listesi
+        
+    Örnek:
+        Bugün 28-11-2025 ise ve days_ahead=2 ise:
+        ['2025-11-28', '2025-11-29']
+    """
+    today = datetime.now().date()
+    dates = []
+    
+    for i in range(days_ahead):
+        forecast_date = today + timedelta(days=i)
+        dates.append(forecast_date.strftime("%Y-%m-%d"))
+    
+    return dates
 
 
 class APIError(Exception):
@@ -167,6 +221,81 @@ def retry_on_failure(max_attempts=3, backoff_factor=2, retry_statuses=(500, 502,
         
         return wrapper
     return decorator
+
+
+class DatabaseManager:
+    """Database işlemleri için yardımcı sınıf"""
+    
+    def __init__(self, db_url: str):
+        """
+        Args:
+            db_url: SQLAlchemy database URL (postgresql://user:pass@host:port/dbname)
+        """
+        self.engine = create_engine(db_url)
+        self.SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=self.engine)
+    
+    def get_session(self) -> Session:
+        """Yeni bir database session oluştur"""
+        return self.SessionLocal()
+    
+    def fetch_forecast_data(self, forecast_date: str, customer_name: str = None) -> List[Dict]:
+        """
+        Belirtilen tarih için tahmin verilerini çek
+        
+        Args:
+            forecast_date: Tahmin tarihi (YYYY-MM-DD)
+            customer_name: Müşteri adı (None ise tüm müşteriler)
+            
+        Returns:
+            Liste halinde tahmin kayıtları
+        """
+        session = self.get_session()
+        try:
+            from sqlalchemy import text
+            
+            # SQL sorgusu
+            query = """
+                SELECT 
+                    forecast_date,
+                    hour,
+                    customer_name,
+                    forecast_type,
+                    wattica_forecast
+                FROM customer_forecast_comparisons
+                WHERE forecast_date = :forecast_date
+            """
+            
+            params = {'forecast_date': forecast_date}
+            
+            if customer_name:
+                query += " AND customer_name = :customer_name"
+                params['customer_name'] = customer_name
+            
+            query += " ORDER BY hour, customer_name"
+            
+            result = session.execute(text(query), params)
+            rows = result.fetchall()
+            
+            # Dict'e çevir
+            data = []
+            for row in rows:
+                data.append({
+                    'forecast_date': row[0],
+                    'hour': row[1],
+                    'customer_name': row[2],
+                    'forecast_type': row[3],
+                    'wattica_forecast': row[4]
+                })
+            
+            logger.info(f"Fetched {len(data)} records from database for date {forecast_date}")
+            return data
+            
+        except Exception as e:
+            logger.error(f"Database query failed: {e}")
+            raise
+        finally:
+            session.close()
+
 
 class SmartPulseClient:
     """SmartPulse API Client - Pipeline işlemleri"""
@@ -334,50 +463,80 @@ class SmartPulseClient:
             logger.error(f"Forecast request failed: {e}")
             return False
     
-    def execute_pipeline(self, forecast_data: Dict) -> bool:
+    def execute_pipeline(self, forecast_data: Dict, forecast_date: str) -> bool:
         """
         Pipeline: Token al → Login → Veri gönder
+        
+        Args:
+            forecast_data: API formatında tahmin verisi
+            forecast_date: Tahmin tarihi (loglamak için)
         """
         logger.info("=" * 60)
-        logger.info("Starting SmartPulse Pipeline")
+        logger.info(f"Starting SmartPulse Pipeline for {forecast_date}")
         logger.info("=" * 60)
         
-        # Adım 1: Token al
-        if not self.get_token():
-            logger.error("Pipeline failed at Step 1 (Token)")
+        # Adım 1: Token al (gerekirse, token cache var)
+        if not self._ensure_valid_token():
+            logger.error("Pipeline failed: No valid token")
             return False
         
         # Adım 2: Login
         if not self.login_to_portal():
-            logger.error("Pipeline failed at Step 2 (Login)")
+            logger.error(f"Pipeline failed at Step 2 (Login) for {forecast_date}")
             return False
         
         # Adım 3: Veri gönder
         if not self.send_consumption_forecast(forecast_data):
-            logger.error("Pipeline failed at Step 3 (Forecast)")
+            logger.error(f"Pipeline failed at Step 3 (Forecast) for {forecast_date}")
             return False
         
         logger.info("=" * 60)
-        logger.info("Pipeline completed successfully!")
+        logger.info(f"Pipeline completed successfully for {forecast_date}!")
         logger.info("=" * 60)
         
         return True
 
 
-def generate_mock_forecast_data(forecast_date: str = None) -> Dict:
+def transform_db_data_to_api_format(db_records: List[Dict], forecast_date: str) -> Dict:
     """
-    Mock tahmin verisi oluştur (24 saatlik)
-    """
-    if forecast_date is None:
-        forecast_date = datetime.now().strftime("%Y-%m-%d")
+    Database'den çekilen verileri SmartPulse API formatına dönüştür
     
-    # 24 saatlik tahmin verisi
+    Args:
+        db_records: Database'den çekilen kayıtlar
+        forecast_date: Tahmin tarihi (YYYY-MM-DD)
+        
+    Returns:
+        SmartPulse API formatında dict
+    """
+    if not db_records:
+        logger.warning(f"No data found in database for date {forecast_date}")
+        return None
+    
+    # 24 saatlik forecast listesi oluştur
     forecasts = []
     base_date = datetime.strptime(forecast_date, "%Y-%m-%d")
     
+    # Saat bazında veri topla (0-23)
+    hour_data = {}
+    for record in db_records:
+        hour = record['hour']
+        if hour not in hour_data:
+            hour_data[hour] = []
+        hour_data[hour].append(record)
+    
+    # Her saat için API formatında entry oluştur
     for hour in range(24):
         start_time = base_date + timedelta(hours=hour)
         end_time = base_date + timedelta(hours=hour + 1)
+        
+        # O saat için değer (varsa)
+        value = 0.0
+        if hour in hour_data:
+            # Wattica tahminlerinin ortalamasını al veya toplamını al (iş mantığına göre)
+            values = [r['wattica_forecast'] for r in hour_data[hour] if r['wattica_forecast'] is not None]
+            if values:
+                value = sum(values)  # Toplam kullanıyoruz (müşteri bazlı ise)
+                # value = sum(values) / len(values)  # Ortalama için bu satırı kullan
         
         forecasts.append({
             "isUpdated": False,
@@ -385,59 +544,171 @@ def generate_mock_forecast_data(forecast_date: str = None) -> Dict:
             "deliveryEnd": end_time.strftime("%Y-%m-%dT%H:%M:%S"),
             "deliveryStartOffset": 180,
             "deliveryEndOffset": 180,
-            "order": hour + 1,
-            "value": round(50 + (hour * 2) + (hour % 3) * 5, 2)  # Mock değerler
+            "order": hour + 1,  # 1-24 arası
+            "value": round(value, 2)
         })
     
-    return {
-        "groupId": 12,
-        "userId": 2952,
+    # Günlük toplam hesapla (tüm saatlerin değerlerinin toplamı)
+    daily_total = sum(f["value"] for f in forecasts)
+    
+    # API formatında döndür
+    api_data = {
+        "groupId": 12,  # Config'den alınabilir
+        "userId": 2952,  # Config'den alınabilir
         "period": 1,
         "interval": 1,
         "forecastDataList": [
             {
                 "unitType": 0,
                 "unitNo": 1,
-                "providerKey": "testDemo",
-                "total": 0,
+                "providerKey": "testDemo",  # Config'den alınabilir
+                "total": round(daily_total, 2),  # Günlük toplam tahmin (24 saatin toplamı)
                 "isUpdated": False,
                 "forecastDay": forecast_date,
                 "forecasts": forecasts
             }
         ]
     }
+    
+    logger.info(f"Transformed {len(db_records)} DB records into 24-hour forecast for {forecast_date}")
+    return api_data
+
+
+def process_forecast_for_date(
+    forecast_date: str,
+    db_manager: DatabaseManager,
+    client: SmartPulseClient
+) -> bool:
+    """
+    Belirli bir tarih için tahmin işlemini gerçekleştir
+    
+    Args:
+        forecast_date: Tahmin tarihi (YYYY-MM-DD)
+        db_manager: Database manager instance
+        client: SmartPulse client instance
+        
+    Returns:
+        Başarılı ise True, değilse False
+    """
+    logger.info(f"\n{'='*70}")
+    logger.info(f"Processing forecast for date: {forecast_date}")
+    logger.info(f"{'='*70}\n")
+    
+    try:
+        # 1. Verileri database'den çek
+        logger.info(f"Step 1: Fetching data from database for {forecast_date}...")
+        db_records = db_manager.fetch_forecast_data(forecast_date)
+        
+        if not db_records:
+            logger.warning(f"No data found for {forecast_date}, skipping...")
+            return False
+        
+        # 2. API formatına dönüştür
+        logger.info(f"Step 2: Transforming data to API format...")
+        api_data = transform_db_data_to_api_format(db_records, forecast_date)
+        
+        if not api_data:
+            logger.error(f"Failed to transform data for {forecast_date}")
+            return False
+        
+        # 3. Pipeline'ı çalıştır (API'ye gönder)
+        logger.info(f"Step 3: Sending data to SmartPulse API...")
+        success = client.execute_pipeline(api_data, forecast_date)
+        
+        if success:
+            logger.info(f"✓ Successfully completed forecast submission for {forecast_date}")
+        else:
+            logger.error(f"✗ Failed to submit forecast for {forecast_date}")
+        
+        return success
+        
+    except Exception as e:
+        logger.error(f"Error processing forecast for {forecast_date}: {e}", exc_info=True)
+        return False
 
 
 if __name__ == "__main__":
     # Logs klasörünü oluştur
-    import os
     os.makedirs("logs", exist_ok=True)
     
     # Logging setup
+    log_filename = f"logs/smartpulse_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
     setup_logging(
-        log_level=logging.INFO,  # DEBUG için daha detaylı log
-        log_file="logs/smartpulse.log"  # Dosyaya da yaz
+        log_level=logging.INFO,
+        log_file=log_filename
     )
     
-    logger.info("SmartPulse Integration Client starting...")
+    logger.info("="*70)
+    logger.info("SmartPulse Automatic Daily Forecast Submission")
+    logger.info("="*70)
     
-    # Config yükle
-    config = load_config()
+    # Tarihleri otomatik hesapla
+    forecast_dates = get_forecast_dates(days_ahead=FORECAST_DAYS_AHEAD)
     
-    # Client oluştur
-    client = SmartPulseClient(config)
+    logger.info(f"Script execution time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    logger.info(f"Forecast dates to process: {', '.join(forecast_dates)}")
+    logger.info(f"Total days: {len(forecast_dates)}")
     
-    # Mock veri oluştur
-    forecast_date = "2024-11-26"
-    mock_data = generate_mock_forecast_data(forecast_date)
+    # Database URL oluştur
+    db_url = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
     
-    logger.info(f"Generated mock forecast for: {forecast_date}")
-    logger.info(f"Total hours: {len(mock_data['forecastDataList'][0]['forecasts'])}")
+    try:
+        # Database Manager oluştur
+        logger.info("\nInitializing database connection...")
+        db_manager = DatabaseManager(db_url)
+        
+        # Config yükle
+        logger.info("Loading configuration...")
+        config = load_config()
+        
+        # SmartPulse Client oluştur
+        logger.info("Initializing SmartPulse client...")
+        client = SmartPulseClient(config)
+        
+        # İlk token'ı al (tüm günler için aynı token kullanılacak)
+        logger.info("Obtaining initial access token...")
+        if not client.get_token():
+            logger.error("Failed to obtain initial token. Exiting...")
+            sys.exit(1)
+        
+        # Her gün için işlem yap
+        results = {}
+        for forecast_date in forecast_dates:
+            success = process_forecast_for_date(forecast_date, db_manager, client)
+            results[forecast_date] = success
+            
+            # Günler arası kısa bekleme (rate limit için)
+            if forecast_date != forecast_dates[-1]:  # Son gün değilse
+                logger.info("\nWaiting 2 seconds before next date...")
+                time.sleep(2)
+        
+        # Özet rapor
+        logger.info("\n" + "="*70)
+        logger.info("EXECUTION SUMMARY")
+        logger.info("="*70)
+        
+        successful = sum(1 for v in results.values() if v)
+        failed = len(results) - successful
+        
+        logger.info(f"Total dates processed: {len(results)}")
+        logger.info(f"Successful: {successful}")
+        logger.info(f"Failed: {failed}")
+        
+        logger.info("\nDetailed results:")
+        for date, success in results.items():
+            status = "✓ SUCCESS" if success else "✗ FAILED"
+            logger.info(f"  {date}: {status}")
+        
+        logger.info("="*70)
+        
+        # Exit code
+        if failed > 0:
+            logger.warning(f"Completed with {failed} failure(s)")
+            sys.exit(1)
+        else:
+            logger.info("All operations completed successfully!")
+            sys.exit(0)
     
-    # Pipeline'ı çalıştır
-    success = client.execute_pipeline(mock_data)
-    
-    if success:
-        logger.info("All operations completed successfully!")
-    else:
-        logger.error("Pipeline execution failed. Check logs above.")
+    except Exception as e:
+        logger.error(f"Fatal error: {e}", exc_info=True)
+        sys.exit(1)

@@ -1,0 +1,70 @@
+2025-11-28 17:06:40 - __main__ - INFO - ======================================================================
+2025-11-28 17:06:40 - __main__ - INFO - SmartPulse Automatic Daily Forecast Submission
+2025-11-28 17:06:40 - __main__ - INFO - ======================================================================
+2025-11-28 17:06:40 - __main__ - INFO - Script execution time: 2025-11-28 17:06:40
+2025-11-28 17:06:40 - __main__ - INFO - Forecast dates to process: 2025-11-28, 2025-11-29
+2025-11-28 17:06:40 - __main__ - INFO - Total days: 2
+2025-11-28 17:06:40 - __main__ - INFO - 
+Initializing database connection...
+2025-11-28 17:06:40 - __main__ - INFO - Loading configuration...
+2025-11-28 17:06:40 - __main__ - INFO - Initializing SmartPulse client...
+2025-11-28 17:06:40 - __main__ - INFO - Obtaining initial access token...
+2025-11-28 17:06:40 - __main__ - INFO - Requesting access token...
+2025-11-28 17:06:40 - __main__ - INFO - Token received successfully (expires at 18:06:40)
+2025-11-28 17:06:40 - __main__ - INFO - 
+======================================================================
+2025-11-28 17:06:40 - __main__ - INFO - Processing forecast for date: 2025-11-28
+2025-11-28 17:06:40 - __main__ - INFO - ======================================================================
+
+2025-11-28 17:06:40 - __main__ - INFO - Step 1: Fetching data from database for 2025-11-28...
+2025-11-28 17:06:40 - __main__ - INFO - Fetched 1056 records from database for date 2025-11-28
+2025-11-28 17:06:40 - __main__ - INFO - Step 2: Transforming data to API format...
+2025-11-28 17:06:40 - __main__ - INFO - Transformed 1056 DB records into 24-hour forecast for 2025-11-28
+2025-11-28 17:06:40 - __main__ - INFO - Step 3: Sending data to SmartPulse API...
+2025-11-28 17:06:40 - __main__ - INFO - ============================================================
+2025-11-28 17:06:40 - __main__ - INFO - Starting SmartPulse Pipeline for 2025-11-28
+2025-11-28 17:06:40 - __main__ - INFO - ============================================================
+2025-11-28 17:06:40 - __main__ - INFO - Logging in to portal...
+2025-11-28 17:06:40 - __main__ - INFO - Login successful (User ID: 2952)
+2025-11-28 17:06:40 - __main__ - INFO - Sending consumption forecast...
+2025-11-28 17:06:40 - __main__ - INFO - Forecast saved successfully (24 records)
+2025-11-28 17:06:40 - __main__ - INFO - ============================================================
+2025-11-28 17:06:40 - __main__ - INFO - Pipeline completed successfully for 2025-11-28!
+2025-11-28 17:06:40 - __main__ - INFO - ============================================================
+2025-11-28 17:06:40 - __main__ - INFO - ✓ Successfully completed forecast submission for 2025-11-28
+2025-11-28 17:06:40 - __main__ - INFO - 
+Waiting 2 seconds before next date...
+2025-11-28 17:06:42 - __main__ - INFO - 
+======================================================================
+2025-11-28 17:06:42 - __main__ - INFO - Processing forecast for date: 2025-11-29
+2025-11-28 17:06:42 - __main__ - INFO - ======================================================================
+
+2025-11-28 17:06:42 - __main__ - INFO - Step 1: Fetching data from database for 2025-11-29...
+2025-11-28 17:06:42 - __main__ - INFO - Fetched 1056 records from database for date 2025-11-29
+2025-11-28 17:06:42 - __main__ - INFO - Step 2: Transforming data to API format...
+2025-11-28 17:06:42 - __main__ - INFO - Transformed 1056 DB records into 24-hour forecast for 2025-11-29
+2025-11-28 17:06:42 - __main__ - INFO - Step 3: Sending data to SmartPulse API...
+2025-11-28 17:06:42 - __main__ - INFO - ============================================================
+2025-11-28 17:06:42 - __main__ - INFO - Starting SmartPulse Pipeline for 2025-11-29
+2025-11-28 17:06:42 - __main__ - INFO - ============================================================
+2025-11-28 17:06:42 - __main__ - INFO - Logging in to portal...
+2025-11-28 17:06:42 - __main__ - INFO - Login successful (User ID: 2952)
+2025-11-28 17:06:42 - __main__ - INFO - Sending consumption forecast...
+2025-11-28 17:06:42 - __main__ - INFO - Forecast saved successfully (24 records)
+2025-11-28 17:06:42 - __main__ - INFO - ============================================================
+2025-11-28 17:06:42 - __main__ - INFO - Pipeline completed successfully for 2025-11-29!
+2025-11-28 17:06:42 - __main__ - INFO - ============================================================
+2025-11-28 17:06:42 - __main__ - INFO - ✓ Successfully completed forecast submission for 2025-11-29
+2025-11-28 17:06:42 - __main__ - INFO - 
+======================================================================
+2025-11-28 17:06:42 - __main__ - INFO - EXECUTION SUMMARY
+2025-11-28 17:06:42 - __main__ - INFO - ======================================================================
+2025-11-28 17:06:42 - __main__ - INFO - Total dates processed: 2
+2025-11-28 17:06:42 - __main__ - INFO - Successful: 2
+2025-11-28 17:06:42 - __main__ - INFO - Failed: 0
+2025-11-28 17:06:42 - __main__ - INFO - 
+Detailed results:
+2025-11-28 17:06:42 - __main__ - INFO -   2025-11-28: ✓ SUCCESS
+2025-11-28 17:06:42 - __main__ - INFO -   2025-11-29: ✓ SUCCESS
+2025-11-28 17:06:42 - __main__ - INFO - ======================================================================
+2025-11-28 17:06:42 - __main__ - INFO - All operations completed successfully!

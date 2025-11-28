@@ -219,6 +219,7 @@ def save_consumption_forecast(
     print(f"   User ID: {request.userId}")
     print(f"   Date: {request.forecastDataList[0].forecastDay}")
     print(f"   Total hourly records: {total_records}")
+    print(request)
     
     return ForecastResponse(
         success=True,
