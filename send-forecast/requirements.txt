@@ -1,0 +1,14 @@
+# HTTP Requests
+requests>=2.31.0
+
+# Environment Variables
+python-dotenv>=1.0.0
+
+# PostgreSQL Database
+psycopg2-binary>=2.9.9
+
+# Optional: Better datetime handling
+python-dateutil>=2.8.2
+
+# Optional: Logging enhancements
+colorlog>=6.8.0
